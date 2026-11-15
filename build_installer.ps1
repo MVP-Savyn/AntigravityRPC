@@ -67,13 +67,3 @@ Write-Host ""
 Write-Host "Compilación completada:" -ForegroundColor Green
 Write-Host "  - Ejecutable Rust portable: $DistExe"
 Write-Host "  - Instalador Windows:       $ProjectDir\installer_out\AntigravityRichPresenceSetup.exe"
-
-$DocsDownloadsDir = Join-Path $ProjectDir "docs\downloads"
-if (Test-Path (Join-Path $ProjectDir "docs")) {
-    New-Item -ItemType Directory -Force -Path $DocsDownloadsDir | Out-Null
-    $SetupExe = Join-Path $ProjectDir "installer_out\AntigravityRichPresenceSetup.exe"
-    if (Test-Path $SetupExe) {
-        Copy-Item -Force $SetupExe (Join-Path $DocsDownloadsDir "AntigravityRichPresenceSetup.exe")
-    }
-    Write-Host "  - Instalador web actualizado en: $DocsDownloadsDir"
-}

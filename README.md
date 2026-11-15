@@ -26,7 +26,7 @@
 
 ## 📦 Instalación
 
-Ejecuta **`AntigravityRichPresenceSetup.exe`** en Windows 10/11 (x64):
+Descarga y ejecuta **[`AntigravityRichPresenceSetup.exe`](https://github.com/MVP-Savyn/AntigravityRPC/releases/latest/download/AntigravityRichPresenceSetup.exe)** en Windows 10/11 (x64):
 
 1. Preconfigurado de fábrica listo para conectar con Discord sin cuentas ni claves adicionales.
 2. Crea el acceso directo **`Antigravity (con Discord RPC)`** con modo `--launch` para no dejar procesos residentes al cerrar el editor.
