@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="obsidian">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentación — AntigravityRPC</title>
+  <meta name="description" content="Documentación técnica y guía de uso de AntigravityRPC: instalación, modo launcher --launch, telemetría local y configuración." />
+  <link rel="icon" type="image/png" href="assets/antigravity-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <canvas id="gravity-canvas" aria-hidden="true"></canvas>
+  <div class="ambient-aurora aurora-1" aria-hidden="true"></div>
+  <div class="ambient-aurora aurora-2" aria-hidden="true"></div>
+  <div class="ambient-grid" aria-hidden="true"></div>
+
+  <header class="navbar-wrap">
+    <nav class="navbar glass-pill" aria-label="Primary navigation">
+      <a href="index.html" class="brand">
+        <img src="assets/antigravity-icon.png" alt="AntigravityRPC logo" class="brand-logo" width="28" height="28" />
+        <span class="brand-name">Antigravity<span class="spectrum-text">RPC</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="index.html" data-i18n="docs.backHome">Inicio</a>
+        <a href="#instalacion" data-i18n="docs.navInstall">Instalación</a>
+        <a href="#launcher" data-i18n="docs.navLaunch">Modo --launch</a>
+        <a href="#arquitectura" data-i18n="docs.navArch">Arquitectura</a>
+        <a href="#config" data-i18n="docs.navConfig">Configuración</a>
+      </div>
+
+      <div class="nav-actions">
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button type="button" class="lang-btn active" data-lang="es">ES</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <div class="social-links" aria-label="Social links">
+          <a href="https://github.com/MVP-Savyn" target="_blank" rel="noopener noreferrer" class="social-btn social-gh" aria-label="GitHub — MVP-Savyn" title="GitHub">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.96 10.96 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.26 5.68.42.36.79 1.07.79 2.15 0 1.56-.01 2.81-.01 3.19 0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+          </a>
+          <a href="https://youtube.com/@T0xicArea" target="_blank" rel="noopener noreferrer" class="social-btn social-yt" aria-label="YouTube — @T0xicArea" title="YouTube">
+            <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FF0033" d="M23.5 6.2a3.01 3.01 0 0 0-2.12-2.13C19.5 3.56 12 3.56 12 3.56s-7.5 0-9.38.51A3.01 3.01 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3.01 3.01 0 0 0 2.12 2.13c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.01 3.01 0 0 0 2.12-2.13c.34-1.9.5-3.85.5-5.8 0-1.95-.16-3.9-.5-5.8Z"/><path fill="#FFFFFF" d="M9.55 15.57V8.43L15.82 12l-6.27 3.57Z"/></svg>
+          </a>
+          <a href="https://discord.gg/HJvgmCRpGm" target="_blank" rel="noopener noreferrer" class="social-btn social-dc" aria-label="Discord" title="Discord">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.32 4.37A19.8 19.8 0 0 0 15.44 2.86c-.21.38-.45.88-.62 1.29a18.27 18.27 0 0 0-5.64 0c-.17-.41-.41-.91-.63-1.29A19.74 19.74 0 0 0 3.67 4.37C.58 9.01-.26 13.54.16 18a19.9 19.9 0 0 0 5.99 3.03c.48-.66.91-1.36 1.28-2.09-.7-.26-1.37-.58-2-.96.17-.12.33-.25.49-.38 3.86 1.79 8.05 1.79 11.86 0 .16.13.32.26.49.38-.63.38-1.3.7-2 .96.37.73.8 1.43 1.28 2.09A19.86 19.86 0 0 0 23.84 18c.49-5.17-.83-9.66-3.52-13.63ZM8.02 15.27c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.1 2.15 2.42 0 1.34-.95 2.42-2.15 2.42Zm7.96 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.1 2.15 2.42 0 1.34-.94 2.42-2.15 2.42Z"/></svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container docs-layout">
+    <aside class="docs-sidebar glass-panel">
+      <div class="docs-side-title" data-i18n="docs.toc">Contenido</div>
+      <nav class="docs-side-links">
+        <a href="#instalacion" data-i18n="docs.navInstall">Instalación</a>
+        <a href="#launcher" data-i18n="docs.navLaunch">Modo --launch y Tray</a>
+        <a href="#arquitectura" data-i18n="docs.navArch">Telemetría local</a>
+        <a href="#git" data-i18n="docs.navGit">Rama Git y repositorio</a>
+        <a href="#config" data-i18n="docs.navConfig">Configuración</a>
+      </nav>
+      <a href="downloads/AntigravityRichPresenceSetup.exe" download class="btn btn-primary btn-full btn-sm-docs" data-download-track="installer">
+        <span data-i18n="hero.downloadSetup">Descargar</span>
+        <span class="btn-meta">2.51 MB</span>
+      </a>
+    </aside>
+
+    <div class="docs-content">
+      <header class="docs-header">
+        <span class="section-kicker" data-i18n="docs.kicker">DOCUMENTACIÓN · V1.0.0</span>
+        <h1 class="section-title" data-i18n="docs.title">Guía técnica de AntigravityRPC</h1>
+        <p class="section-desc" data-i18n="docs.subtitle">
+          Todo lo necesario para instalar, entender cómo se calculan tus estadísticas y personalizar tu presencia en Discord.
+        </p>
+      </header>
+
+      <section id="instalacion" class="docs-card glass-panel">
+        <h2 data-i18n="docs.installTitle">1. Instalación</h2>
+        <p data-i18n="docs.installDesc">
+          Ejecuta <strong>AntigravityRichPresenceSetup.exe</strong> (Windows 10/11 x64). El instalador incluye todo lo necesario en un único binario Rust nativo sin dependencias externas ni runtimes adicionales.
+        </p>
+        <ul>
+          <li data-i18n="docs.installItem1">Crea el acceso directo <strong>Antigravity (con Discord RPC)</strong> en el menú Inicio.</li>
+          <li data-i18n="docs.installItem2">Preconfigurado de fábrica con el Client ID oficial (<code class="inline-code">1571349694016266300</code>) y el icono de Antigravity.</li>
+          <li data-i18n="docs.installItem3">Si actualizas una versión abierta, el instalador cierra la instancia anterior automáticamente.</li>
+        </ul>
+      </section>
+
+      <section id="launcher" class="docs-card glass-panel">
+        <h2 data-i18n="docs.launchTitle">2. Modo Launcher (--launch) y Bandeja del sistema</h2>
+        <p data-i18n="docs.launchDesc">
+          El acceso directo <strong>Antigravity (con Discord RPC)</strong> ejecuta <code class="inline-code">AntigravityRichPresence.exe --launch</code>. De este modo abre Antigravity, monitoriza sus ventanas y termina limpiamente en cuanto cierras Antigravity, evitando procesos residentes en segundo plano.
+        </p>
+        <ul>
+          <li data-i18n="docs.trayItem1"><strong>Clic izquierdo en el icono del tray:</strong> abre la ventana minimalista de configuración.</li>
+          <li data-i18n="docs.trayItem2"><strong>Clic derecho en el icono del tray:</strong> abre menú rápido con <em>Configuración</em> y <em>Cerrar RPC</em>.</li>
+          <li data-i18n="docs.trayItem3">Recuperación automática del icono del tray si Windows reinicia <code class="inline-code">explorer.exe</code>.</li>
+        </ul>
+        <div class="launcher-terminal docs-terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span>
+            <span class="term-dot y"></span>
+            <span class="term-dot g"></span>
+            <span class="term-title">AntigravityRichPresence.exe --launch</span>
+          </div>
+          <div class="term-body">
+            <div><span class="t-dim">[00:00]</span> <span class="t-blue">LAUNCH</span> Antigravity.exe detected &amp; attached</div>
+            <div><span class="t-dim">[00:02]</span> <span class="t-green">IPC OK</span> Connected to \\.\pipe\discord-ipc-0</div>
+            <div><span class="t-dim">[01:45]</span> <span class="t-yellow">SYNC</span> Project stats: 30d | 74h | 413 interactions</div>
+            <div><span class="t-dim">[02:10]</span> <span class="t-red">EXIT</span> Antigravity closed -&gt; RPC terminated cleanly</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="arquitectura" class="docs-card glass-panel">
+        <h2 data-i18n="docs.archTitle">3. Telemetría 100% local y cálculo de estadísticas</h2>
+        <p data-i18n="docs.archDesc">
+          AntigravityRPC no envía datos a ningún servidor ni lee tu código fuente. Extrae metadatos locales en tu equipo y comunica directamente con Discord por <code class="inline-code">\\.\pipe\discord-ipc-0</code>:
+        </p>
+        <ul>
+          <li data-i18n="docs.archItem1"><strong>Proyecto y ventana activa:</strong> <code class="inline-code">annotations/*.pbtxt</code>, <code class="inline-code">app_storage.json</code>, <code class="inline-code">projects/*.json</code> y <code class="inline-code">conversation_summaries.db</code>.</li>
+          <li data-i18n="docs.archItem2"><strong>Días activos, horas e interacciones:</strong> agrega todas las conversaciones del proyecto desde <code class="inline-code">transcript.jsonl</code> contando días naturales distintos, horas reales e interacciones de usuario (<code class="inline-code">USER_INPUT</code>).</li>
+          <li data-i18n="docs.archItem3"><strong>Formato mostrado:</strong> <code class="inline-code">Invertido: 30d | 74h | 413 interacciones</code> (o en inglés <code class="inline-code">Invested: 30d | 74h | 413 interactions</code>). Si estás en un chat libre sin proyecto, muestra la conversación actual.</li>
+        </ul>
+      </section>
+
+      <section id="git" class="docs-card glass-panel">
+        <h2 data-i18n="docs.gitTitle">4. Rama Git y botón Ver repositorio</h2>
+        <p data-i18n="docs.gitDesc">
+          Si la carpeta del proyecto es un repositorio Git, lee <code class="inline-code">.git/HEAD</code> para añadir la rama activa junto al proyecto y normaliza remotos SSH/HTTPS de <code class="inline-code">.git/config</code> para mostrar el botón interactivo <strong>Ver repositorio</strong> en Discord.
+        </p>
+      </section>
+
+      <section id="config" class="docs-card glass-panel">
+        <h2 data-i18n="docs.configTitle">5. Opciones de configuración</h2>
+        <p data-i18n="docs.configDesc">
+          Los ajustes se guardan automáticamente en <code class="inline-code">%APPDATA%\AntigravityRichPresence\config.json</code> y se aplican al instante:
+        </p>
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th data-i18n="docs.thOpt">Opción</th>
+                <th data-i18n="docs.thDef">Por defecto</th>
+                <th data-i18n="docs.thDesc">Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code class="inline-code">language</code></td>
+                <td><code class="inline-code">es</code></td>
+                <td data-i18n="docs.rowLang">Idioma de Discord y de la interfaz (es / en).</td>
+              </tr>
+              <tr>
+                <td><code class="inline-code">show_project_stats</code></td>
+                <td><code class="inline-code">true</code></td>
+                <td data-i18n="docs.rowStats">Muestra días, horas invertidas e interacciones del proyecto.</td>
+              </tr>
+              <tr>
+                <td><code class="inline-code">show_conversation_title</code></td>
+                <td><code class="inline-code">false</code></td>
+                <td data-i18n="docs.rowConvo">Incluye el título de la conversación actual dentro de un proyecto.</td>
+              </tr>
+              <tr>
+                <td><code class="inline-code">show_git_branch</code></td>
+                <td><code class="inline-code">true</code></td>
+                <td data-i18n="docs.rowGit">Muestra la rama Git activa junto al nombre del proyecto.</td>
+              </tr>
+              <tr>
+                <td><code class="inline-code">show_agent_status</code></td>
+                <td><code class="inline-code">true</code></td>
+                <td data-i18n="docs.rowBusy">Badge indicando si el agente está trabajando o listo.</td>
+              </tr>
+              <tr>
+                <td><code class="inline-code">show_repo_button</code></td>
+                <td><code class="inline-code">true</code></td>
+                <td data-i18n="docs.rowRepo">Añade el botón Ver repositorio cuando hay remoto HTTPS/SSH.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/antigravity-icon.png" alt="AntigravityRPC" width="20" height="20" />
+        <span><strong>AntigravityRPC</strong> · MVP-Savyn</span>
+      </div>
+      <div class="footer-meta">
+        <a href="index.html" class="footer-link" data-i18n="docs.backHome">Inicio</a>
+        <span>·</span>
+        <a href="https://github.com/MVP-Savyn" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+        <span>·</span>
+        <a href="https://youtube.com/@T0xicArea" target="_blank" rel="noopener noreferrer" class="footer-link">YouTube</a>
+        <span>·</span>
+        <a href="https://discord.gg/HJvgmCRpGm" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

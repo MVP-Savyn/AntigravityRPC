@@ -1,0 +1,14 @@
+{
+  "client_id": "1571349694016266300",
+  "large_image": "antigravity",
+  "large_text": "Google Antigravity",
+  "language": "es",
+  "poll_interval_sec": 3,
+  "show_conversation_title": false,
+  "show_project_stats": true,
+  "show_git_branch": true,
+  "show_agent_status": true,
+  "show_repo_button": true,
+  "reset_timer_on_project_change": true,
+  "fallback_to_last_project": false
+}

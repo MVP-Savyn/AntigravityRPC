@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="obsidian">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AntigravityRPC — Discord Rich Presence para Antigravity</title>
+  <meta name="description" content="Muestra en Discord tu proyecto activo en Antigravity, rama Git, tiempo invertido e interacciones reales. Sin procesos en segundo plano." />
+  <link rel="icon" type="image/png" href="assets/antigravity-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <canvas id="gravity-canvas" aria-hidden="true"></canvas>
+  <div class="ambient-aurora aurora-1" aria-hidden="true"></div>
+  <div class="ambient-aurora aurora-2" aria-hidden="true"></div>
+  <div class="ambient-grid" aria-hidden="true"></div>
+
+  <!-- Top Floating Navigation -->
+  <header class="navbar-wrap">
+    <nav class="navbar glass-pill" aria-label="Primary navigation">
+      <a href="#top" class="brand">
+        <img src="assets/antigravity-icon.png" alt="AntigravityRPC logo" class="brand-logo" width="28" height="28" />
+        <span class="brand-name">Antigravity<span class="spectrum-text">RPC</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#simulator" data-i18n="nav.simulator">Simulador</a>
+        <a href="#features" data-i18n="nav.features">Características</a>
+        <a href="docs.html" data-i18n="nav.docs">Documentación</a>
+      </div>
+
+      <div class="nav-actions">
+        <div class="lang-switch" role="group" aria-label="Language selector">
+          <button type="button" class="lang-btn active" data-lang="es">ES</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <div class="social-links" aria-label="Social links">
+          <a href="https://github.com/MVP-Savyn" target="_blank" rel="noopener noreferrer" class="social-btn social-gh" aria-label="GitHub — MVP-Savyn" title="GitHub">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.96 10.96 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.26 5.68.42.36.79 1.07.79 2.15 0 1.56-.01 2.81-.01 3.19 0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+          </a>
+          <a href="https://youtube.com/@T0xicArea" target="_blank" rel="noopener noreferrer" class="social-btn social-yt" aria-label="YouTube — @T0xicArea" title="YouTube">
+            <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FF0033" d="M23.5 6.2a3.01 3.01 0 0 0-2.12-2.13C19.5 3.56 12 3.56 12 3.56s-7.5 0-9.38.51A3.01 3.01 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3.01 3.01 0 0 0 2.12 2.13c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.01 3.01 0 0 0 2.12-2.13c.34-1.9.5-3.85.5-5.8 0-1.95-.16-3.9-.5-5.8Z"/><path fill="#FFFFFF" d="M9.55 15.57V8.43L15.82 12l-6.27 3.57Z"/></svg>
+          </a>
+          <a href="https://discord.gg/HJvgmCRpGm" target="_blank" rel="noopener noreferrer" class="social-btn social-dc" aria-label="Discord" title="Discord">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.32 4.37A19.8 19.8 0 0 0 15.44 2.86c-.21.38-.45.88-.62 1.29a18.27 18.27 0 0 0-5.64 0c-.17-.41-.41-.91-.63-1.29A19.74 19.74 0 0 0 3.67 4.37C.58 9.01-.26 13.54.16 18a19.9 19.9 0 0 0 5.99 3.03c.48-.66.91-1.36 1.28-2.09-.7-.26-1.37-.58-2-.96.17-.12.33-.25.49-.38 3.86 1.79 8.05 1.79 11.86 0 .16.13.32.26.49.38-.63.38-1.3.7-2 .96.37.73.8 1.43 1.28 2.09A19.86 19.86 0 0 0 23.84 18c.49-5.17-.83-9.66-3.52-13.63ZM8.02 15.27c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.1 2.15 2.42 0 1.34-.95 2.42-2.15 2.42Zm7.96 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.1 2.15 2.42 0 1.34-.94 2.42-2.15 2.42Z"/></svg>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- Hero + Live 3D Simulator -->
+    <section class="hero container" id="simulator">
+      <div class="hero-copy reveal">
+        <div class="hero-eyebrow">
+          <span class="pulse-dot"></span>
+          <span data-i18n="hero.eyebrow">Windows 10/11 · Rust Nativo</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span data-i18n="hero.titleStart">Tu trabajo en</span>
+          <span class="spectrum-text">Antigravity</span><span data-i18n="hero.titleEnd">, vivo en Discord.</span>
+        </h1>
+
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          Muestra tu proyecto activo, rama Git, tiempo invertido e interacciones reales. Ligero y sin procesos en segundo plano.
+        </p>
+
+        <div class="hero-cta-row">
+          <a href="downloads/AntigravityRichPresenceSetup.exe" download class="btn btn-primary btn-lg magnetic" data-magnetic="0.18" data-download-track="installer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-i18n="hero.downloadSetup">Descargar</span>
+            <span class="btn-meta">2.51 MB</span>
+          </a>
+          <a href="https://github.com/MVP-Savyn/AntigravityRPC" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-lg magnetic" data-magnetic="0.15">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.69-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.96 10.96 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.26 5.68.42.36.79 1.07.79 2.15 0 1.56-.01 2.81-.01 3.19 0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+            <span data-i18n="hero.repoBtn">Repositorio</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Interactive 3D Discord Card & Simulator Controls -->
+      <div class="hero-stage reveal" style="--delay: 100ms;">
+        <div class="stage-glow" aria-hidden="true"></div>
+
+        <div class="tilt-wrapper" id="rpc-tilt-card">
+          <div class="discord-card">
+            <div class="discord-card-header">
+              <div class="discord-avatar-wrap">
+                <div class="discord-avatar">
+                  <img src="assets/github-avatar.png" alt="MVP-Savyn avatar" />
+                </div>
+                <span class="discord-status-badge" title="Online"></span>
+              </div>
+              <div class="discord-user-meta">
+                <div class="discord-username-row">
+                  <span class="discord-username">MVP-Savyn</span>
+                  <span class="discord-tag">DEV</span>
+                </div>
+              </div>
+              <span class="live-sim-badge">
+                <span class="live-dot"></span>
+                <span data-i18n="sim.liveBadge">EN VIVO</span>
+              </span>
+            </div>
+
+            <div class="discord-activity-block">
+              <div class="activity-heading" data-i18n="sim.playingHeading">Jugando</div>
+              <div class="activity-body">
+                <div class="activity-art" id="sim-art-box" data-tooltip="Antigravity · Trabajando">
+                  <img src="assets/antigravity-icon.png" alt="Antigravity Rich Presence icon" class="art-large" />
+                  <div class="art-badge" id="sim-small-badge" title="Agente activo">
+                    <span class="badge-spinner"></span>
+                  </div>
+                </div>
+
+                <div class="activity-text">
+                  <div class="activity-app-name">Antigravity</div>
+                  <div class="activity-line" id="sim-details">SAVIN-HOLLOWDRIVE (main)</div>
+                  <div class="activity-line activity-line-muted" id="sim-state">Invertido: 30d | 74h | 413 interacciones</div>
+                  <div class="activity-timer">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 6H7a5 5 0 0 0-4.9 6.02l.8 3.92A3.5 3.5 0 0 0 6.33 19c1.27 0 2.45-.68 3.09-1.78L10 16.2h4l.58 1.02A3.55 3.55 0 0 0 17.67 19a3.5 3.5 0 0 0 3.43-3.06l.8-3.92A5 5 0 0 0 17 6ZM9 13H8v1a1 1 0 1 1-2 0v-1H5a1 1 0 1 1 0-2h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2Zm6.5-1.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm2 2a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>
+                    <span id="sim-elapsed">04:18</span>
+                  </div>
+                </div>
+              </div>
+
+              <a href="https://github.com/MVP-Savyn/AntigravityRPC" target="_blank" rel="noopener noreferrer" class="discord-rpc-btn" id="sim-repo-btn">
+                <span id="sim-repo-label">Ver repositorio</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="sim-controls glass-panel">
+          <div class="sim-controls-header">
+            <span class="sim-controls-title" data-i18n="sim.controlsTitle">Simulador de ajustes</span>
+            <div class="project-pills" role="tablist" aria-label="Sample projects">
+              <button type="button" class="project-pill active" data-project="hollowdrive">HollowDrive</button>
+              <button type="button" class="project-pill" data-project="antigravityRpc">AntigravityRPC</button>
+              <button type="button" class="project-pill" data-project="freeChat" data-i18n="sim.freeChat">Chat libre</button>
+            </div>
+          </div>
+
+          <div class="sim-toggles-grid">
+            <label class="toggle-chip">
+              <input type="checkbox" id="opt-stats" checked />
+              <span class="toggle-ui"></span>
+              <span data-i18n="sim.optStats">Tiempo invertido</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="opt-branch" checked />
+              <span class="toggle-ui"></span>
+              <span data-i18n="sim.optBranch">Rama Git</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="opt-busy" checked />
+              <span class="toggle-ui"></span>
+              <span data-i18n="sim.optBusy">Estado del agente</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="opt-convo" />
+              <span class="toggle-ui"></span>
+              <span data-i18n="sim.optConvo">Chat actual</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="opt-repo" checked />
+              <span class="toggle-ui"></span>
+              <span data-i18n="sim.optRepo">Botón repositorio</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Concise 3-Card Overview -->
+    <section class="section features-section container" id="features">
+      <div class="bento-grid bento-compact">
+        <article class="bento-card spotlight-card reveal">
+          <div class="card-icon spectrum-bg-blue">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3 data-i18n="feat.statsTitle">Tiempo real por proyecto</h3>
+          <p data-i18n="feat.statsDesc">
+            Muestra días activos, horas totales e interacciones reales sin exponer tu código.
+          </p>
+        </article>
+
+        <article class="bento-card spotlight-card reveal" style="--delay: 70ms;">
+          <div class="card-icon spectrum-bg-green">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+          </div>
+          <h3 data-i18n="feat.launchTitle">Sin procesos en 2º plano</h3>
+          <p data-i18n="feat.launchDesc">
+            Inicia y se cierra automáticamente junto con Antigravity desde su acceso directo.
+          </p>
+        </article>
+
+        <article class="bento-card spotlight-card reveal" style="--delay: 140ms;">
+          <div class="card-icon spectrum-bg-yellow">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+          </div>
+          <h3 data-i18n="feat.trayTitle">Tray minimalista ES / EN</h3>
+          <p data-i18n="feat.trayDesc">
+            Un clic para configurar o cerrar el RPC al instante. Preconfigurado listo para usar.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/antigravity-icon.png" alt="AntigravityRPC" width="20" height="20" />
+        <span><strong>AntigravityRPC</strong> · MVP-Savyn</span>
+      </div>
+      <div class="footer-meta">
+        <a href="docs.html" class="footer-link" data-i18n="nav.docs">Documentación</a>
+        <span>·</span>
+        <a href="https://github.com/MVP-Savyn" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+        <span>·</span>
+        <a href="https://youtube.com/@T0xicArea" target="_blank" rel="noopener noreferrer" class="footer-link">YouTube</a>
+        <span>·</span>
+        <a href="https://discord.gg/HJvgmCRpGm" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

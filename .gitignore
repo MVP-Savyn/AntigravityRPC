@@ -1,0 +1,9 @@
+rust/target/
+build/
+dist/
+installer_out/
+__pycache__/
+*.log
+*.pyc
+.DS_Store
+Thumbs.db
